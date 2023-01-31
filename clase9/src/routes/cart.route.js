@@ -16,21 +16,28 @@ router.post("/", async (req, res) => {
     res.status(500).send("No se pudo crear el carrito");
   }
 });
+//Agregar producto con Cart id y Product id
 router.post("/:cid/product/:pid", async (req, res) => {
-  const { cid, pid } = req.params;
+  const { cid, pid } = req.params; // son Strings
+  const cidNumber = parseInt(cid);
+  const pidNumber = parseInt(pid);
 
   try {
-    const addProductToCart = carts.addProductToCart(cid, pid);
-    res.status(200).send({
-      status: "Successful",
-      message: "El producto a sido agregado correctamente",
-    });
+    const addProductToCart = await carts.addProductToCart(pidNumber, cidNumber);
+    if (addProductToCart === null) {
+      res.status(404).send({ status: error, message: "Carrito no encontrado" });
+    } else {
+      res.status(200).send({
+        status: "Successful",
+        message: "Producto añadido correctamente",
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send("No se pudo agregar el producto");
   }
 });
-
+// Ver los carritos por id y buscar a todos los carritos
 router.get("/:cid", async (req, res) => {
   const { cid } = req.params;
   try {

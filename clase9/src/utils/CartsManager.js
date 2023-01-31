@@ -26,9 +26,7 @@ export default class CartsManager {
   // obtiene el producto segun el id pasado
   async getCartsById(id) {
     const cartSave = await this.getCarts();
-
-    const found = cartSave.find((product) => product.id === id);
-
+    const found = cartSave.find((cart) => cart.id === id);
     if (found === undefined) {
       console.log("Not Found");
       return null;
@@ -51,23 +49,38 @@ export default class CartsManager {
       throw new Error("No se pudo crear el carrito");
     }
   }
+  // primero el id del producto desp el id del cart en el endpoint
   async addProductToCart(cid, pid) {
     if (!cid || !pid) {
       throw new Error("Faltan rellenar campos");
     }
     try {
-      const getCarts = await this.getCartsById(parseInt(cid));
-      const getProductsById = await manager.getProductsById(parseInt(pid));
-      getCarts.products.push({
-        product: getProductsById.id,
-        quantity: 1,
-      });
+      const getCarts = await this.getCarts();
+      const cart = getCarts.find((cart) => cart.id === cid);
+      if (cart) {
+        const productInCart = cart.products.find(
+          (producto) => producto.product === pid
+        );
+        console.log(productInCart);
+        if (productInCart === undefined) {
+          cart.products.push({
+            product: pid,
+            quantity: 1,
+          });
+        } else {
+          productInCart.quantity++;
+        }
+      } else {
+        console.log("Carrito no existente");
+        return null; // throw new Error() q seria bloqueante
+      }
+
       await fs.promises.writeFile(this.path, JSON.stringify(getCarts));
       return getCarts;
     } catch (error) {
-      throw new Error("No se encontro el carrito o el producto");
-    } 
-    
+      console.log(error);
+      return null;
+    }
   }
 
   async #generateId() {
