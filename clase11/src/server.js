@@ -3,11 +3,11 @@ import handlebars from "express-handlebars";
 import { Server } from "socket.io";
 
 import { __dirname } from "./utils.js";
-
+import { join } from "path";
 import realTimeProducts from "./routes/realTimeProducts.route.js";
 import cartRoute from "./routes/cart.route.js";
 import productsRoute from "./routes/products.route.js";
-import inicio from "./routes/inicio.route.js";
+import home from "./routes/home.route.js";
 const app = express();
 
 app.use(express.json());
@@ -16,13 +16,19 @@ app.use(express.urlencoded({ extended: true }));
 // archivos estaticos
 app.use(express.static(__dirname + "/public"));
 
-// motores de plantilla
-app.engine("handlebars", handlebars.engine());
-app.set("view engine", "handlebars");
-app.set("views", __dirname + "/views");
+// config de hadlebars
+app.set("views", join(__dirname, "views"));
+const hbs = handlebars.create({
+  defaultLayout: "main",
+  layoutsDir: join(app.get("views"), "layouts"),
+  partialsDir: join(app.get("views"), "partials"),
+  extname: ".hbs",
+});
+app.engine(".hbs", hbs.engine);
+app.set("view engine", ".hbs");
 
 //Rutas
-app.use("/", inicio);
+app.use("/", home);
 app.use("/realtimeproducts", realTimeProducts);
 app.use("/api/products", productsRoute);
 app.use("/api/carts", cartRoute);
@@ -33,4 +39,6 @@ const httpServer = app.listen(8080, () => {
 
 // websocket
 
-const socketServer = new Server(httpServer);
+export const socketServer = new Server(httpServer);
+
+
