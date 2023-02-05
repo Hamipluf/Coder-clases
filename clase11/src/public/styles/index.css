@@ -53,3 +53,17 @@ body {
 .listado > li {
   padding: 10px;
 }
+.form {
+  background: #2c3e50;
+  margin: 10px;
+  padding: 10px 0;
+}
+.input {
+  padding: 5px;
+  margin: 5px;
+  border-radius: 10px;
+  background: #ebedee;
+}
+input ::placeholder {
+  font-size: 1.3rem;
+}

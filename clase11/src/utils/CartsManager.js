@@ -1,6 +1,6 @@
 import fs from "fs";
 import { get } from "http";
-import ProductManager from "../utils/ProductManager.js";
+import ProductManager from "./ProductManager.js";
 const manager = new ProductManager("Products.json");
 export default class CartsManager {
   constructor(path) {

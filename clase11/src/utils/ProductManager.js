@@ -71,7 +71,7 @@ export default class ProductManager {
       };
       productSave.push(product);
       await fs.promises.writeFile(this.path, JSON.stringify(productSave));
-      return productSave;
+      return product;
     } catch (error) {
       throw new Error("message: No se pudo guardar el producto");
     }

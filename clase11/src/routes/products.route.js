@@ -66,10 +66,13 @@ router.post("/", async (req, res) => {
       category,
       thumbnail
     );
+    console.log("addPRODUCT:", addProduct);
     res.status(200).send({
       status: "Successful",
       message: "El producto a sido agregado correctamente",
     });
+    // La instancia esta creada en server.js, solo utilizo este emit para poder actualizar los productos
+    socketServer.emit("product.route:products", addProduct);
   } catch (error) {
     console.log(error);
     res.status(500).send("No se pudo agregar el producto");
