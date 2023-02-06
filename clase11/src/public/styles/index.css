@@ -53,17 +53,68 @@ body {
 .listado > li {
   padding: 10px;
 }
+
 .form {
+  display: grid;
+  grid-template-columns: 1fr;
   background: #2c3e50;
   margin: 10px;
   padding: 10px 0;
 }
 .input {
   padding: 5px;
-  margin: 5px;
+  margin: 5px 10px;
   border-radius: 10px;
   background: #ebedee;
 }
 input ::placeholder {
   font-size: 1.3rem;
+}
+.form > button {
+  margin: 5px;
+  padding: 5px;
+  font-weight: 600;
+  border-radius: 10px;
+  border: 1px solid #2c3e50;
+}
+.form > button:hover {
+  opacity: 0.8;
+}
+
+.status {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: #c3cfe2;
+  margin: 10px;
+}
+.status > label {
+  justify-self: flex-start;
+  margin: 5px 10px;
+  padding: 0 100px 0 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.form-delete {
+  display: flex;
+  justify-content: center;
+  background: #2c3e50;
+  margin: 10px;
+  padding: 10px 0;
+}
+.form-delete > label {
+  margin: 0 10px 0 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+} 
+.form-delete > button {
+  margin: 5px;
+  padding: 5px 10px;
+  border-radius: 10px;
+  border: 1px solid #2c3e50;
+}
+.form-delete > button:hover {
+  background-color: red;
+  opacity: .6;
+  transition: all .1s ease-in;
 }

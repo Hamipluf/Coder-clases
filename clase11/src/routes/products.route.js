@@ -66,16 +66,25 @@ router.post("/", async (req, res) => {
       category,
       thumbnail
     );
-    console.log("addPRODUCT:", addProduct);
-    res.status(200).send({
-      status: "Successful",
-      message: "El producto a sido agregado correctamente",
-    });
-    // La instancia esta creada en server.js, solo utilizo este emit para poder actualizar los productos
-    socketServer.emit("product.route:products", addProduct);
+    if (addProduct === null) {
+      res.status(400).send({
+        status: "Error",
+        message: "Faltan campos a rellenar",
+      });
+    } else {
+      res.status(200).send({
+        status: "Successful",
+        message: "El producto a sido agregado correctamente",
+      });
+      // La instancia esta creada en server.js, solo utilizo este emit para poder actualizar los productos
+      socketServer.emit("product.route:products", addProduct);
+    }
   } catch (error) {
     console.log(error);
-    res.status(500).send("No se pudo agregar el producto");
+    res.status(500).send({
+      status: "Error",
+      message: "No se pudo agregar el producto",
+    });
   }
 });
 // Actualiza un producto con el pid por params
@@ -102,10 +111,17 @@ router.delete("/:pid", async (req, res) => {
   const { pid } = req.params; // params son strings ""
   try {
     const deleteProduct = await manager.deleteProduct(parseInt(pid));
-    res.status(200).send({
-      status: "Successful",
-      message: "El producto a sido eliminado correctamente",
-    });
+    if (deleteProduct === null) {
+      res.status(400).send({
+        status: "Error",
+        message: "Coloque el id a eliminar",
+      });
+    } else {
+      res.status(200).send({
+        status: "Successful",
+        message: "El producto a sido eliminado correctamente",
+      });
+    }
   } catch (error) {
     console.log(error);
     res.status(500).send("No se pudo eliminar el producto");

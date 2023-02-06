@@ -54,7 +54,8 @@ export default class ProductManager {
       !status ||
       !stock
     ) {
-      throw new Error("Faltan rellenar campos");
+      return null
+      // throw new Error("Faltan rellenar campos");
     }
     try {
       const productSave = await this.getProducts();
@@ -79,7 +80,8 @@ export default class ProductManager {
   // elimina un productos
   async deleteProduct(id) {
     if (!id) {
-      throw new Error("Indica el id del producto a eliminar");
+      return null
+      // throw new Error("Indica el id del producto a eliminar");
     }
     try {
       const productSave = await this.getProducts();

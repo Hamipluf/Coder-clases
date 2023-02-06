@@ -1,6 +1,6 @@
 <h1 class="title">Real time</h1>
 
-<form class="form" action="">
+<form class="form" id="form" action="">
   <input
     class="input"
     type="text"
@@ -23,22 +23,18 @@
     name="price"
     id="price"
   />
-  ture:
-  <input
-    class="input"
-    type="checkbox"
-    placeholder="status true"
-    name="status"
-    id="status"
-  />
-  false:
-  <input
-    class="input"
-    type="checkbox"
-    placeholder="status false"
-    name="status"
-    id="status"
-  />
+  <div class="status">
+    <label>Status</label>
+    ture:
+    <input
+      class="input"
+      type="checkbox"
+      placeholder="status true"
+      name="status"
+      id="status"
+    />
+
+  </div>
   <input
     class="input"
     type="number"
@@ -54,6 +50,12 @@
     id="category"
   />
   <button>Add Product</button>
+</form>
+<form class="form-delete" id="form-delete">
+  <label>Id product to delete:</label>
+  <input type="number" name="id" id="id" />
+
+  <button>Delete Product</button>
 </form>
 
 <ul id="listporducts" class="listado"></ul>
