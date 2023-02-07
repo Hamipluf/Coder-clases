@@ -111,6 +111,7 @@ router.delete("/:pid", async (req, res) => {
   const { pid } = req.params; // params son strings ""
   try {
     const deleteProduct = await manager.deleteProduct(parseInt(pid));
+
     if (deleteProduct === null) {
       res.status(400).send({
         status: "Error",
@@ -121,7 +122,10 @@ router.delete("/:pid", async (req, res) => {
         status: "Successful",
         message: "El producto a sido eliminado correctamente",
       });
+      // La instancia esta creada en server.js, solo utilizo este emit para poder actualizar los productos
+      socketServer.emit("product.route:deleteProduct", deleteProduct);
     }
+         
   } catch (error) {
     console.log(error);
     res.status(500).send("No se pudo eliminar el producto");

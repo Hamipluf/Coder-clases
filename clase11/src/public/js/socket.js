@@ -2,10 +2,25 @@ const socket = io();
 
 // Elmentos DOM
 const listProducts = document.getElementById("listporducts");
-const newProduct = document.getElementById("newproduct");
 const form = document.getElementById("form");
 const formDelete = document.getElementById("form-delete");
 
+// Listado de productos ya guardados
+// Me suscribo al evento "realtimeproduct.route:oldProducts", que me devuelve [{},{}] de productos
+// hago un forEach para ingresar a cada elemento y los agrego al dom como un li con el id correspondiente
+// al producto para indentificar cada elemento
+socket.on("realtimeproduct.route:oldProducts", (oldProducts) => {
+  console.log(oldProducts);
+  oldProducts.forEach((products) => {
+    const li = document.createElement("li");
+    li.setAttribute("id", products.id);
+    li.innerHTML = `<h1>Title: ${products.title}</h1><h2>Category: ${products.category}</h2><p>Description: ${products.description}</p><p>Code: ${products.code}</p><p>Id: ${products.id}</p><p>Price: ${products.price}</p><p>Status: ${products.status}</p><p>Stock: ${products.stock}</p><p>Image: ${products.thumbnail}</p>`;
+    listProducts.appendChild(li);
+  });
+});
+
+// Agrego un producto haciendo una peticion a mi ruta y si me devuelve status 200 creo el elemento
+// con el producto que se agrego el cual me devuelve la suscripcion al topico "product.route:products"
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   fetch(`${url}/api/products`, {
@@ -21,6 +36,7 @@ form.addEventListener("submit", (e) => {
       status: e.target[4].checked,
       stock: e.target[5].value,
       category: e.target[6].value,
+      thumbnail: e.target[7].value,
     }),
   })
     .then((res) => {
@@ -55,13 +71,26 @@ form.addEventListener("submit", (e) => {
             background: "linear-gradient(to top, #9890e3 0%, #b1f4cf 100%)",
           },
         }).showToast();
+        // New Product real time
+        socket.on("product.route:products", (products) => {
+          const li = document.createElement("li");
+          // seteo un id para poder indentificar el elemento y eliminarlo
+          li.setAttribute("id", products.id);
+          li.innerHTML += `<h1>Title: ${products.title}</h1><h2>Category: ${products.category}</h2><p>Description: ${products.description}</p><p>Code: ${products.code}</p><p>Id: ${products.id}</p><p>Price: ${products.price}</p><p>Status: ${products.status}</p><p>Stock: ${products.stock}</p><p>Image: ${products.thumbnail}</p>`;
+          listProducts.appendChild(li);
+        });
       }
     })
     .catch((e) => console.log("errror", e));
 });
+// En el form capturo en numero de Id para eliminar el producto y hago la peticion a la url
+// correspondiente
 formDelete.addEventListener("submit", (e) => {
   e.preventDefault();
   const idToDelete = e.target[0].value;
+  // en caso de que me devuelva el res.status === 200 elimino el producto del dom y como ya se mando
+  // la oeticion en la persistencia en archivo ya se modifico, en caso de que algo falle lanzo un error
+  // para poder debuggear lo necesario
   fetch(`${url}/api/products/${idToDelete}`, {
     method: "DELETE",
     headers: {
@@ -100,21 +129,8 @@ formDelete.addEventListener("submit", (e) => {
             background: "linear-gradient(to top, #9890e3 0%, #b1f4cf 100%)",
           },
         }).showToast();
+        document.getElementById(`${idToDelete}`).remove();
       }
     })
     .catch((e) => console.log(e));
-});
-
-// Listado de productos ya guardados
-socket.on("realtimeproduct.route:oldProducts", (oldProducts) => {
-  oldProducts.forEach((products) => {
-    const li = document.createElement("li");
-    li.innerHTML = `<h1>Title: ${products.title}</h1><h2>Category: ${products.category}</h2><p>Description: ${products.description}</p><p>Code: ${products.code}</p><p>Id: ${products.id}</p><p>Price: ${products.price}</p><p>Status: ${products.status}</p><p>Stock: ${products.stock}</p><p>Image: ${products.thumbnail}</p>`;
-    listProducts.appendChild(li);
-  });
-});
-
-// New Product real time
-socket.on("product.route:products", (products) => {
-  newProduct.innerHTML += `<ul class="listado"><li><h1>Title: ${products.title}</h1><h2>Category: ${products.category}</h2><p>Description: ${products.description}</p><p>Code: ${products.code}</p><p>Id: ${products.id}</p><p>Price: ${products.price}</p><p>Status: ${products.status}</p><p>Stock: ${products.stock}</p><p>Image: ${products.thumbnail}</p></li></ul>`;
 });
