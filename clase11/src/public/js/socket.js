@@ -19,8 +19,17 @@ socket.on("realtimeproduct.route:oldProducts", (oldProducts) => {
   });
 });
 
-// Agrego un producto haciendo una peticion a mi ruta y si me devuelve status 200 creo el elemento
+// New Product real time creo el elemento
 // con el producto que se agrego el cual me devuelve la suscripcion al topico "product.route:products"
+socket.on("product.route:products", (products) => {
+  const li = document.createElement("li");
+  // seteo un id para poder indentificar el elemento y eliminarlo
+  li.setAttribute("id", products.id);
+  li.innerHTML += `<h1>Title: ${products.title}</h1><h2>Category: ${products.category}</h2><p>Description: ${products.description}</p><p>Code: ${products.code}</p><p>Id: ${products.id}</p><p>Price: ${products.price}</p><p>Status: ${products.status}</p><p>Stock: ${products.stock}</p><p>Image: ${products.thumbnail}</p>`;
+  listProducts.appendChild(li);
+});
+
+// Agrego un producto haciendo una peticion a mi ruta
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   fetch(`${url}/api/products`, {
@@ -71,14 +80,6 @@ form.addEventListener("submit", (e) => {
             background: "linear-gradient(to top, #9890e3 0%, #b1f4cf 100%)",
           },
         }).showToast();
-        // New Product real time
-        socket.on("product.route:products", (products) => {
-          const li = document.createElement("li");
-          // seteo un id para poder indentificar el elemento y eliminarlo
-          li.setAttribute("id", products.id);
-          li.innerHTML += `<h1>Title: ${products.title}</h1><h2>Category: ${products.category}</h2><p>Description: ${products.description}</p><p>Code: ${products.code}</p><p>Id: ${products.id}</p><p>Price: ${products.price}</p><p>Status: ${products.status}</p><p>Stock: ${products.stock}</p><p>Image: ${products.thumbnail}</p>`;
-          listProducts.appendChild(li);
-        });
       }
     })
     .catch((e) => console.log("errror", e));
@@ -133,4 +134,6 @@ formDelete.addEventListener("submit", (e) => {
       }
     })
     .catch((e) => console.log(e));
+  // vacio el input
+  e.target[0].value = "";
 });
