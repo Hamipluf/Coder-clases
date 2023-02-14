@@ -1,7 +1,9 @@
+import * as dotenv from "dotenv";
+dotenv.config();
 import mongoose from "mongoose";
 
-const URI =
-  "mongodb+srv://hamipluf:K_9KzACNVfT-X6e@cluster0.pmrma3u.mongodb.net/ecommerceCoder?retryWrites=true&w=majority";
+const URI = proccses.env.URI_MONGO;
+
 mongoose.connect(URI, (error) => {
   if (error) {
     console.log("No se pudo conectar la base de datos");
