@@ -1,10 +1,17 @@
 import { porductsModel } from "../models/products.model.js";
 
 export default class ProductManager {
-  async getProducts() {
+  async getProducts(limit, page, query, sort) {
+    // console.log("LIMIT:", limit, "PAGE:", page, "QUERY", query, "SORT:", sort);
+    const filtro = {
+      limit,
+      page,
+      sort: sort ? { price: sort } : {},
+    };
+
     try {
-      const products = await porductsModel.find();
-      return products;
+      const filterProducts = await porductsModel.paginate(query, filtro);
+      return filterProducts;
     } catch (error) {
       console.log(error);
       return error;
@@ -20,8 +27,40 @@ export default class ProductManager {
     }
   }
   async addProduct(product) {
+    const {
+      title,
+      description,
+      code,
+      price,
+      status,
+      stock,
+      category,
+      thumbnail,
+    } = product;
+    if (
+      !title ||
+      !description ||
+      !code ||
+      !price ||
+      !status ||
+      !stock ||
+      !category
+    ) {
+      return null;
+    }
+    // Normalizo el producto colocando todo en minuscula para que en las consultas por querys y params no haya confusiones
+    const productNormalize = {
+      title: title.toLowerCase(),
+      description: description.toLowerCase(),
+      code,
+      price,
+      status,
+      stock,
+      category: category.toLowerCase(),
+      thumbnail,
+    };
     try {
-      const newProduct = await porductsModel.create(product);
+      const newProduct = await porductsModel.create(productNormalize);
       return newProduct;
     } catch (error) {
       console.log(error);
@@ -68,3 +107,4 @@ export default class ProductManager {
     }
   }
 }
+// .paginate({}, { limit, page });

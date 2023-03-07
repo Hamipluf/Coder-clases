@@ -6,21 +6,41 @@ import { socketServer } from "../app.js";
 const router = Router();
 const manager = new ProductManager();
 
-// Devuelve el prodcto por limite (en caso de no aclarar limite devuelve todos los productos)
+// Devuelve el prodcto por los filtros:
+// sort(ordena de forma acendente "asc", o descendente "desc" el precio)
+// limit(da el limite de productos que necesitas que te devuelvan)
+// page(la pagina a la que necesitas ir)
+// query(te trae los elementos por la categora o por el estado del producto segun el stock)
+//(en caso de no aclarar limite devuelve todos los productos)
 router.get("/", async (req, res) => {
   // este endpoint devuelve un arreglo [productos]
-  const { limit } = req.query; // devuelve string
+  const { limit = 10, page = 1, sort, ...query } = req.query; // devuelve string
   try {
-    const productSave = await manager.getProducts();
-
-    const productosLimit = productSave.slice(0, parseInt(limit));
-    if (limit) {
-      res.status(200).send(productosLimit);
-    } else {
-      res.status(200).send(productSave);
-    }
+    const products = await manager.getProducts(
+      parseInt(limit),
+      parseInt(page),
+      query,
+      sort
+    );
+    const resJson = {
+      status: products.docs.length === 0 ? "error" : "succses",
+      payload: products.docs,
+      totalPages: products.totalPages,
+      prevPage: products.prevPage,
+      nextPage: products.nextPage,
+      hasPrevPage: products.hasPrevPage,
+      hasNextPage: products.hasNextPage,
+      prevLink: products.hasPrevPage
+        ? `http://localhost:8080/api/products?page=${products.prevPage}`
+        : null,
+      nextLink: products.hasNextPage
+        ? `http://localhost:8080/api/products?page=${products.nextPage}`
+        : null,
+    };
+    res.status(200).json(resJson);
   } catch (error) {
-    res.status(500).send({
+    console.log(error);
+    res.status(500).json({
       status: "Error",
       message: "El archivo no existe o no se puede leer",
     });
@@ -37,6 +57,7 @@ router.get("/:pid", async (req, res) => {
     if (getProductsById === null) {
       res.status(404).send("Producto no encontrado");
     }
+    s;
     res.status(200).send(getProductsById); // devuelve {}
   } catch (error) {
     console.log(error.message);

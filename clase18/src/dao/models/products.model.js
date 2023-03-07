@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import mongoosePaginate from "mongoose-paginate-v2";
 
 // El producto que se ingrese va a necesiar si o si de las porpiedades
 // que se detallan en el schema
@@ -37,5 +38,6 @@ const productsSchema = new mongoose.Schema({
     type: Array,
   },
 });
+productsSchema.plugin(mongoosePaginate);
 
 export const porductsModel = mongoose.model("Products", productsSchema);

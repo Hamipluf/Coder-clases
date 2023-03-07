@@ -48,21 +48,22 @@ socket.on("product.route:products", (products) => {
 // Agrego un producto haciendo una peticion a mi ruta
 form.addEventListener("submit", (e) => {
   e.preventDefault();
+  const producto = {
+    title: e.target[0].value,
+    description: e.target[1].value,
+    code: e.target[2].value,
+    price: e.target[3].value,
+    status: e.target[4].checked,
+    stock: e.target[5].value,
+    category: e.target[6].value,
+    thumbnail: e.target[7].value,
+  };
   fetch(`${url}/api/products`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      title: e.target[0].value,
-      description: e.target[1].value,
-      code: e.target[2].value,
-      price: e.target[3].value,
-      status: e.target[4].checked,
-      stock: e.target[5].value,
-      category: e.target[6].value,
-      thumbnail: e.target[7].value,
-    }),
+    body: JSON.stringify(producto),
   })
     .then((res) => {
       if (res.status === 400) {
@@ -72,7 +73,7 @@ form.addEventListener("submit", (e) => {
           gravity: "top",
           position: "right",
           style: {
-            background: "linear-gradient(to top, #9890e3 0%, #b1f4cf 100%)",
+            background: "linear-gradient(147deg, #ffc53b 0%, #FF2525 74%)",
           },
         }).showToast();
       }
@@ -86,7 +87,8 @@ form.addEventListener("submit", (e) => {
             background: "linear-gradient(to top, #9890e3 0%, #b1f4cf 100%)",
           },
         }).showToast();
-      } else {
+      }
+      if (res.status === 200) {
         Toastify({
           text: "Producto agregado correctamente",
           duration: 3000,
@@ -98,7 +100,7 @@ form.addEventListener("submit", (e) => {
         }).showToast();
       }
     })
-    .catch((e) => console.log("errror", e));
+    .catch((e) => console.log("*** ERROR ***", e));
 });
 // En el form capturo en numero de Id para eliminar el producto y hago la peticion a la url
 // correspondiente
