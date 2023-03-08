@@ -15,8 +15,10 @@ export default class CartsManager {
   }
   // obtiene el producto segun el id pasado
   async getCartsById(id) {
+    const populate = { path: "products" };
     try {
       const cartById = await cartsModel.findById(id).populate("products");
+      // console.log(cartById);
       return cartById;
     } catch (error) {
       console.log("ERROR getCartsById", error);
@@ -73,8 +75,34 @@ export default class CartsManager {
       return cartById;
     }
   }
-  async udapteCart(cid) {
-    const cartById = cartsModel.findById(cid);
+  // Actualiza el carrito entero
+  async udapteCart(cid, pUdapted) {
+    const cartById = await cartsModel.findByIdAndUpdate(cid, {
+      products: pUdapted,
+    });
     return cartById;
+  }
+  // Actualiza la cantidad  del producto por body
+  async udapteProductToCart(cid, pid, quantity) {
+    const cartById = await cartsModel.findById(cid);
+    const quantityUdapte = cartById.products.filter(
+      (element) => element.id == pid
+    );
+    if (quantityUdapte.length === 0) {
+      return null; // throw new Error() q seria bloqueante
+    } else {
+      quantityUdapte.forEach((element) => {
+        element.quantity = quantity;
+      });
+      cartById.save();
+      return cartById;
+    }
+  }
+  async deleteAllProductToCart(cid) {
+    const deleteProducts = await cartsModel.findByIdAndUpdate(cid, {
+      products: [],
+    });
+    deleteProducts.save();
+    return deleteProducts;
   }
 }
