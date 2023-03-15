@@ -17,9 +17,7 @@ export default class CartsManager {
   async getCartsById(id) {
     const populate = { path: "products" };
     try {
-      const cartById = await cartsModel
-        .findOne({ _id: id })
-        .populate("products.product");
+      const cartById = await cartsModel.findById(id).populate("products");
       // console.log(cartById);
       return cartById;
     } catch (error) {
@@ -100,6 +98,7 @@ export default class CartsManager {
       return cartById;
     }
   }
+  // Elimina todos los productos del carrito
   async deleteAllProductToCart(cid) {
     const deleteProducts = await cartsModel.findByIdAndUpdate(cid, {
       products: [],

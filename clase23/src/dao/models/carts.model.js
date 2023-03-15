@@ -9,8 +9,8 @@ const cartsSchema = new mongoose.Schema({
   ],
 });
 
-// cartsSchema.pre("find", function () {
-//   this.populate("products");
-// });
+cartsSchema.pre("find", function () {
+  this.populate("products");
+});
 
 export const cartsModel = mongoose.model("Carts", cartsSchema);
