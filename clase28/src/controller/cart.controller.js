@@ -1,13 +1,6 @@
-// import CartsManager from "../dao/fileManager/CartsManager.js"; file manager
-// const carts = new CartsManager("Carts.json");
-import { Router } from "express";
-import { cartsModel } from "../../../clase28/src/dao/models/carts.model.js";
-import CartsManager from "../../../clase28/src/dao/mongoManager/CartsManager.js";
+import CartsManager from "../dao/mongoManager/CartsManager.js";
 const carts = new CartsManager();
-const router = Router();
-
-// Crea un carro sin nececidad de pasarle ningun parametro
-router.post("/", async (req, res) => {
+export const createCart = async (req, res) => {
   try {
     const createCart = await carts.createCart();
     res.status(200).send({
@@ -18,9 +11,8 @@ router.post("/", async (req, res) => {
     console.log("ERROR createCart POST", error);
     res.status(500).send("No se pudo crear el carrito");
   }
-});
-// Ver los carritos por id y buscar a todos los carritos
-router.get("/:cid", async (req, res) => {
+};
+export const getCart = async (req, res) => {
   const { cid } = req.params;
   try {
     const getCartById = await carts.getCartsById(cid);
@@ -35,9 +27,8 @@ router.get("/:cid", async (req, res) => {
       .status(500)
       .send({ status: "Error", message: "No se pudo obtener el carrito" });
   }
-});
-// Devuelve todos los carritos existentes
-router.get("/", async (req, res) => {
+};
+export const getAllCarts = async (req, res) => {
   try {
     const getCarts = await carts.getCarts();
     res.status(200).send({
@@ -48,9 +39,8 @@ router.get("/", async (req, res) => {
     console.log("ERROR getCarts GET", error);
     res.status(500).send("No se pudo encontrar el carrito");
   }
-});
-//Agregar producto con Cart id y Product id
-router.post("/:cid/product/:pid", async (req, res) => {
+};
+export const addProductToCart = async (req, res) => {
   const { cid, pid } = req.params; // son Strings
 
   try {
@@ -64,9 +54,8 @@ router.post("/:cid/product/:pid", async (req, res) => {
     console.log("ERROR craddProductToCart POST", error);
     res.status(500).send("No se pudo agregar el producto");
   }
-});
-// Actualiza el carrito entero
-router.put("/:cid", async (req, res) => {
+};
+export const udapteAllCart = async (req, res) => {
   const { cid } = req.params;
   try {
     const udapteCart = await carts.udapteCart(cid, req.body);
@@ -81,9 +70,8 @@ router.put("/:cid", async (req, res) => {
       message: "No se pudo actualizar el carrito",
     });
   }
-});
-// Actualiza la cantidad del producto por body
-router.put("/:cid/products/:pid", async (req, res) => {
+};
+export const udapteProductQuantity = async (req, res) => {
   const { cid, pid } = req.params;
   const { quantity } = req.body;
   try {
@@ -110,9 +98,8 @@ router.put("/:cid/products/:pid", async (req, res) => {
       message: "No se pudo actualizar el producto del carrito",
     });
   }
-});
-// Elimina el producto indicado por params (pid)
-router.delete("/:cid/products/:pid", async (req, res) => {
+};
+export const deleteProductToCart = async (req, res) => {
   const { cid, pid } = req.params; // son Strings
   try {
     const deleteProduct = await carts.deleteProductToCart(cid, pid);
@@ -134,9 +121,8 @@ router.delete("/:cid/products/:pid", async (req, res) => {
       message: "No se pudo eliminar el producto del carrito",
     });
   }
-});
-// Elimina todos los productos del carrito
-router.delete("/:cid/", async (req, res) => {
+};
+export const deleteAllProductsToCart = async (req, res) => {
   const { cid } = req.params;
   try {
     const deleteProducts = await carts.deleteAllProductToCart(cid);
@@ -151,6 +137,4 @@ router.delete("/:cid/", async (req, res) => {
       message: "No se pudo eliminar los productos",
     });
   }
-});
-
-export default router;
+};
