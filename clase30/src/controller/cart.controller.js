@@ -1,11 +1,12 @@
-import CartsManager from "../dao/mongoManager/CartsManager.js";
+import CartsManager from "../persistencia/DAOs/cartsDAO/CartsMongo.js";
 const carts = new CartsManager();
 export const createCart = async (req, res) => {
   try {
-    const createCart = await carts.createCart();
+    const createCart = await carts.createCart({});
     res.status(200).send({
       status: "Successful",
       message: "El carrito a sido creado correctamente",
+      cart: createCart,
     });
   } catch (error) {
     console.log("ERROR createCart POST", error);
@@ -40,19 +41,29 @@ export const getAllCarts = async (req, res) => {
     res.status(500).send("No se pudo encontrar el carrito");
   }
 };
-export const addProductToCart = async (req, res) => {
+export const addProductCart = async (req, res) => {
   const { cid, pid } = req.params; // son Strings
 
   try {
-    const addProductToCart = await carts.addProductToCart(cid, pid);
+    const productToCart = await carts.addProductToCart(cid, pid);
+    if (productToCart.status === "Error") {
+      const message = productToCart.message;
+      return res.status(400).send({
+        status: "Error",
+        message,
+      });
+    }
     res.status(200).send({
       status: "Successful",
       message: "Producto añadido correctamente",
-      data: addProductToCart,
+      data: productToCart,
     });
   } catch (error) {
-    console.log("ERROR craddProductToCart POST", error);
-    res.status(500).send("No se pudo agregar el producto");
+    console.log("ERROR cratdProductToCart POST", error);
+    res.status(500).json({
+      status: "Error",
+      message: "No se puede añadir el producto",
+    });
   }
 };
 export const udapteAllCart = async (req, res) => {

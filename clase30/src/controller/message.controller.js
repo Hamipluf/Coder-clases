@@ -1,5 +1,5 @@
 import { socketServer } from "../app.js";
-import MessageManager from "../dao/mongoManager/MessageManager.js";
+import MessageManager from "../persistencia/DAOs/messageDAO/MessageMongo.js";
 
 const messageManager = new MessageManager();
 

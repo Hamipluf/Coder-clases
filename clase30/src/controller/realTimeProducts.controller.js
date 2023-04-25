@@ -1,7 +1,5 @@
 import { socketServer } from "../app.js";
-// import ProductManager from "../dao/fileManager/ProductManager.js";
-import ProductManager from "../dao/mongoManager/ProductsManager.js";
-// const manager = new ProductManager("Products.json");
+import ProductManager from "../persistencia/DAOs/productsDAO/ProductsMongo.js";
 const manager = new ProductManager();
 
 export const getProductRealTime = async (req, res) => {

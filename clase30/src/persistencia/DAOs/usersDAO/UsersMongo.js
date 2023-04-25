@@ -1,5 +1,5 @@
-import { userModel } from "../models/user.model.js";
-import { comparePasswords } from "../../utils.js";
+import { userModel } from "../../mongoDB/models/user.model.js";
+import usersServices from "../../../services/users.services.js";
 export default class UserManager {
   // Obtiene todos los usuarios
   async getAllUsers() {
@@ -16,32 +16,50 @@ export default class UserManager {
   }
   async getUserByEmail(email) {
     if (!email) {
-      return null; // throw new Error() q seria bloqueante
+      const response = `Faltan campos por completar`;
+      return response;
     }
     try {
-      const user = await userModel.findOne({ email });
+      const user = await usersServices.getUserByEmail(email);
       return user;
     } catch (error) {
       console.log("ERROR getUserById", error);
     }
   }
   async createUser(user) {
+    console.log(user);
+
     const { first_name, last_name, age, email, password } = user;
     if (!first_name || !last_name || !age || !email || !password) {
-      return null; // throw new Error() q seria bloqueante
+      const response = { status: "Error", message: "Falta rellenar campos " };
+      return response; // throw new Error() q seria bloqueante
     }
     try {
-      const createUser = await userModel.create({
+      if (email === "coderadmin@hotmail.com") {
+        const newAdminUser = {
+          first_name,
+          last_name,
+          age,
+          email,
+          role: "admin",
+          password,
+        };
+        const newUserAdminDB = await usersServices.createUser(newAdminUser);
+        return newUserAdminDB;
+      }
+      const userDB = {
         first_name,
         last_name,
         age,
         email,
         password,
-      });
+      };
+      const createUser = await usersServices.createUser(userDB);
       return createUser;
     } catch (error) {
       console.log("ERROR createUser", error);
-      throw new Error("No se pudo crear el usuario");
+      const response = `No se pudo crear el usuario`;
+      return response;
     }
   }
   async loginUser(user) {
@@ -49,7 +67,7 @@ export default class UserManager {
     try {
       const user = await userModel.findOne({ email });
       if (user) {
-        const isPassword = await comparePasswords(password, user.password);
+        const isPassword = await compareData(password, user.password);
         console.log(isPassword);
         if (isPassword) {
           return user;

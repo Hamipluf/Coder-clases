@@ -1,9 +1,6 @@
 import { socketServer } from "../app.js";
-// import ProductManager from "../dao/fileManager/ProductManager.js";
-
-import ProductManager from "../dao/mongoManager/ProductsManager.js";
+import ProductManager from "../persistencia/DAOs/productsDAO/ProductsMongo.js";
 const manager = new ProductManager();
-
 export const getAllProducts = async (req, res) => {
   // este endpoint devuelve un arreglo [productos]
   const { limit = 10, page = 1, sort, ...query } = req.query; // devuelve string
@@ -38,6 +35,7 @@ export const getAllProducts = async (req, res) => {
     });
   }
 };
+
 export const getProductById = async (req, res) => {
   // devuelve un arreglo de productos []
   const { pid } = req.params; // params son strings ""

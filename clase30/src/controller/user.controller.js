@@ -1,11 +1,13 @@
+import usersServices from "../services/users.services.js";
 import { generateToken } from "../utils.js";
-
-import UserManager from "../dao/mongoManager/UsersManager.js";
-const User = new UserManager();
-
 export const registerUser = (req, res) => {
   const user = req.user;
+  console.log(user);
+
   try {
+    if (user.status === "Error") {
+      res.status(404).send({ message: user.message });
+    }
     const token = generateToken(user);
     res
       .cookie("token", token, {
@@ -20,6 +22,7 @@ export const registerUser = (req, res) => {
 };
 export const loginUser = async (req, res) => {
   const user = req.user;
+
   try {
     const token = generateToken(user);
     res
@@ -31,6 +34,33 @@ export const loginUser = async (req, res) => {
       .json({ status: "Successful", token });
   } catch (error) {
     res.status(500).json({ message: "Error al loguear usuario" });
+  }
+};
+
+export const getCurrentUser = (req, res) => {
+  const { user } = req;
+  if (!user) {
+    res
+      .status(404)
+      .json({ status: "Error", message: "Se necesita autenticar el usuario" });
+  }
+  const userResponse = {
+    id: user.id,
+    fullName: `${user.first_name + " " + user.last_name}`,
+    age: user.age,
+    email: user.email,
+    role: user.role,
+  };
+  res.json({ status: "Successful", userResponse });
+};
+export const getUserWithEmail = async (req, res) => {
+  try {
+    const user = await usersServices.getUserWithEmail(req.body);
+    return user;
+  } catch (error) {
+    const response = `No existe ningun usuario con es Email ${error}`;
+    console.log(error);
+    return response;
   }
 };
 export const logoutUser = async (req, res) => {
