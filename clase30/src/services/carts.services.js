@@ -12,7 +12,7 @@ class CartService {
   getOneCartById = async (cid) => {
     const cart = await this.model
       .findById({ _id: cid })
-      .populate({ path: "products.product", select: "title " });
+      .populate("products");
 
     return cart;
   };

@@ -8,7 +8,6 @@ body {
   background: #d8d9d7;
 }
 .navBar {
-  position: fixed;
   width: 100%;
   background-image: linear-gradient(120deg, #d8d9d7 0%, #ced9b8 100%);
   display: flex;

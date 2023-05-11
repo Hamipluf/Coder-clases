@@ -1,4 +1,5 @@
 import { Router } from "express";
+import passport from "passport";
 import {
   addProductCart,
   createCart,
@@ -8,6 +9,7 @@ import {
   getCart,
   udapteAllCart,
   udapteProductQuantity,
+  goToPay,
 } from "../controller/cart.controller.js";
 const router = Router();
 
@@ -17,6 +19,12 @@ router.post("/", createCart);
 router.get("/:cid", getCart);
 // Devuelve todos los carritos existentes
 router.get("/", getAllCarts);
+// Finaliza el proceco de compra
+router.get(
+  "/:cid/purchase",
+  passport.authenticate("jwtCookies", { session: false }),
+  goToPay
+);
 //Agregar producto con Cart id y Product id
 router.post("/:cid/product/:pid", addProductCart);
 // Actualiza el carrito entero

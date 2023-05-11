@@ -7,6 +7,7 @@ import {
   profileView,
   registerView,
   cartView,
+  checkOutView,
 } from "../controller/view.controller.js";
 const router = Router();
 
@@ -24,6 +25,11 @@ router.get(
   "/profile",
   passport.authenticate("jwtCookies", { session: false }),
   profileView
+);
+router.get(
+  "/checkout/ticket",
+  passport.authenticate("jwtCookies", { session: false }),
+  checkOutView
 );
 router.get(
   "/cart",

@@ -1,4 +1,6 @@
 import CartsManager from "../persistencia/DAOs/cartsDAO/CartsMongo.js";
+import TicketManager from "../persistencia/DAOs/ticketDAO/TicketMongo.js";
+const ticketManager = new TicketManager();
 const carts = new CartsManager();
 export const createCart = async (req, res) => {
   try {
@@ -43,7 +45,6 @@ export const getAllCarts = async (req, res) => {
 };
 export const addProductCart = async (req, res) => {
   const { cid, pid } = req.params; // son Strings
-
   try {
     const productToCart = await carts.addProductToCart(cid, pid);
     if (productToCart.status === "Error") {
@@ -146,6 +147,30 @@ export const deleteAllProductsToCart = async (req, res) => {
     res.status(500).send({
       status: "Error",
       message: "No se pudo eliminar los productos",
+    });
+  }
+};
+export const goToPay = async (req, res) => {
+  const { cid } = req.params;
+  const tid = req.cookies.tid;
+  try {
+    const cartVerify = await carts.verifyDataToTicket(cid);
+    const data = {
+      purchaser: req.user.email,
+      amount: cartVerify.total,
+    };
+    let ticket;
+    ticket = await ticketManager.getTicketById(tid);
+    if (ticket === null) {
+      ticket = await ticketManager.createTicker(data);
+      res.cookie("tid", ticket._id, { maxAge: 600000 });
+    }
+    res.status(200).json({ cart: cartVerify, ticket }); 
+  } catch (error) {
+    console.log("goToPay controller", error);
+    res.status(500).json({
+      status: "error",
+      message: "No se pudo procesar la info de pago",
     });
   }
 };

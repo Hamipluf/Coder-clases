@@ -19,7 +19,15 @@ export default class CartsManager {
   async getCartsById(id) {
     try {
       const cartById = await cartServices.getOneCartById(id);
-      return cartById;
+      let total = 0;
+      cartById.products.forEach((element) => {
+        total = total + element.quantity * element._id.price;
+      });
+      const totalCart = {
+        cartById,
+        total,
+      };
+      return totalCart;
     } catch (error) {
       console.log("ERROR getCartsById", error);
       const message = {
@@ -55,7 +63,6 @@ export default class CartsManager {
     try {
       const cartById = await cartServices.getOneCartById(cid);
       const productById = await productsServices.getOneProductById(pid);
-      console.log(productById);
       if (productById.stock === 0) {
         const response = {
           status: "Error",
@@ -63,8 +70,9 @@ export default class CartsManager {
         };
         return response;
       }
-
-      const filter = cartById.products.find((element) => element._id == pid);
+      const filter = cartById.products.find(
+        (element) => element._id._id == pid
+      );
       if (filter === undefined) {
         cartById.products.push(pid);
       } else {
@@ -95,6 +103,7 @@ export default class CartsManager {
     }
     try {
       const cartById = await cartServices.getOneCartById(cid);
+      const productById = await productsServices.getOneProductById(pid);
       const indexToProductDelete = cartById.products.findIndex(
         (element) => element.id == pid
       );
@@ -104,11 +113,11 @@ export default class CartsManager {
           message: "No se encontro el producto",
         };
         return message;
-      } else {
-        cartById.products.splice(indexToProductDelete, 1);
-        cartById.save();
-        return cartById;
       }
+      cartById.products.splice(indexToProductDelete, 1);
+      productById.stock++;
+      cartById.save();
+      return cartById;
     } catch (error) {
       console.log("deleteProductToCart MONGO", error);
       const message = {
@@ -169,6 +178,7 @@ export default class CartsManager {
       return message;
     }
   }
+  // Elimina todos los productos del carrito
   async deleteAllProductToCart(cid) {
     try {
       const deleteProducts = await cartServices.deleteAllProduct(cid, {
@@ -183,5 +193,22 @@ export default class CartsManager {
       };
       return message;
     }
+  }
+  async verifyDataToTicket(cid) {
+    try {
+      const cart = await this.getCartsById(cid);
+      const cartProducts = cart.cartById.products;
+      cartProducts.forEach((product) => {
+        const stock = product._id.stock;
+        if (stock === 0) {
+          const response = {
+            status: "error",
+            message: `No Hay stock de ${product._id.title}`,
+          };
+          return response;
+        }
+      });
+      return cart;
+    } catch (error) {}
   }
 }

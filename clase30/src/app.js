@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.SECRET_COOKIE));
 
 // archivos estaticos
-app.use(express.static(join(__dirname, "/public")));
+app.use(express.static(join(__dirname, "public")));
 // Motor de plantillas\
 app.set("views", join(__dirname, "views"));
 // config de hadlebars

@@ -1,9 +1,7 @@
 import ProductManager from "../persistencia/DAOs/productsDAO/ProductsMongo.js";
 import CartManager from "../persistencia/DAOs/cartsDAO/CartsMongo.js";
-import UserManager from "../persistencia/DAOs/usersDAO/UsersMongo.js";
 const productManager = new ProductManager();
 const cartManager = new CartManager();
-const userManager = new UserManager();
 export const loginView = (req, res) => {
   res.render("login");
 };
@@ -16,8 +14,8 @@ export const homeView = async (req, res) => {
     sort
   );
   const document = products.docs;
-  const user = req.user.role === "user" ? true : false
-  res.render("home", { document, user});
+  const user = req.user.role === "user" ? true : false;
+  res.render("home", { document, user });
 };
 export const registerView = (req, res) => {
   res.render("registro");
@@ -28,10 +26,13 @@ export const profileView = (req, res) => {
 export const errorRegistroView = (req, res) => {
   res.render("errorRegistro");
 };
+export const checkOutView = async (req, res) => {
+  res.render("checkOut");
+};
 export const cartView = async (req, res) => {
   const cid = req.query.cart;
-  console.log(cid);
-  const carts = await cartManager.getCartsById(cid);
-  res.send(carts);
-  // res.render("cart");
+  const cart = await cartManager.getCartsById(cid);
+  const products = cart.cartById.products;
+  const total = cart.total;
+  res.render("cart", { products, total });
 };

@@ -47,7 +47,7 @@ export default class CartsManager {
   // Crea un carro sin nececidad de pasarle ningun parametro
   async createCart(obj) {
     try {
-      const createCart = await cartServices.createCart(obj);
+      const createCart = await cartServices.createCart(obj);  
       return createCart;
     } catch (error) {
       console.log("ERROR createCart", error);

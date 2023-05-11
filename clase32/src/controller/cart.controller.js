@@ -17,7 +17,6 @@ export const getCart = async (req, res) => {
   const { cid } = req.params;
   try {
     const getCartById = await carts.getCartsById(cid);
-
     res.status(200).send({
       status: "Successful",
       data: getCartById,
