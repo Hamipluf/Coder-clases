@@ -17,6 +17,7 @@ import productsRoute from "./routes/products.route.js";
 import userRoute from "./routes/user.route.js";
 import chat from "./routes/messages.route.js";
 import view from "./routes/views.router.js";
+import testLogger from "./routes/testLogger.js"
 // Mongo DB
 import "./persistencia/mongoDB/dbConfig.js";
 // Passport
@@ -54,6 +55,7 @@ app.use("/realtimeproducts", realTimeProducts);
 app.use("/api/products", productsRoute);
 app.use("/api/carts", cartRoute);
 app.use("/api/auth", userRoute);
+app.use("/loggerTest", testLogger)
 
 // HTTP Server
 const httpServer = app.listen(8080, () => {
