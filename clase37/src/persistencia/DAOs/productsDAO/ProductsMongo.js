@@ -45,6 +45,7 @@ export default class ProductManager {
       stock,
       category,
       thumbnail,
+      owner
     } = product;
     if (
       !title ||
@@ -67,6 +68,7 @@ export default class ProductManager {
       stock,
       category: category.toLowerCase(),
       thumbnail,
+      owner
     };
     try {
       const newProduct = await productService.addProductSercice(

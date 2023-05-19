@@ -13,12 +13,20 @@
             {{description}}</p><p>Code: {{code}}</p><p id="pid">Id: {{_id}}</p><p>Price:
             {{price}}</p><p>Status: {{status}}</p><p>Stock: {{stock}}</p><p>Image:
              {{thumbnail}}</p>
-             <button 
-                  class="btn-add-to-cart"
-                  id="add_to_cart" 
-                  onclick="agregar('{{_id}}')">
-                  Agregar al Carrito
-                </button>
+             <div class="list_action">
+              <button 
+                    class="btn-add-to-cart"
+                    id="add_to_cart" 
+                    onclick="agregar('{{_id}}')">
+                    Agregar al Carrito
+                  </button>
+              <button 
+                    class="btn-see-saler"
+                    id="owner_product" 
+                    onclick="seeOwner('{{_id}}')">
+                    Ver vendedor
+                  </button>
+             </div>
             </li>
     {{/each}}
     {{else}}

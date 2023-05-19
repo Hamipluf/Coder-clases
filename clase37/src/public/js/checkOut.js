@@ -15,6 +15,7 @@ const cartId = localStorage.getItem("cart_id");
 fetch(`http://localhost:8080/api/carts/${cartId}/purchase`)
   .then((response) => response.json())
   .then((data) => {
+    console.log(data);
     const cart = data.cart.cartById;
     const ticket = data.ticket;
     cart.products.forEach((product) => {

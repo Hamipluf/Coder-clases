@@ -49,7 +49,7 @@ export const getCurrentUser = (req, res) => {
       .json({ status: "Error", message: "Se necesita autenticar el usuario" });
   }
   const userResponse = {
-    id: user.id,
+    id: user._id,
     fullName: `${user.first_name + " " + user.last_name}`,
     age: user.age,
     email: user.email,
@@ -120,5 +120,41 @@ export const setNewPass = async (req, res) => {
       .status(500)
       .json({ status: "error", message: "No se pudo cambiar la contraseña" });
     Logger.error("controller setNewPass", error);
+  }
+};
+// Cambiar de role
+export const setRole = async (req, res) => {
+  const { uid } = req.params;
+  try {
+    const user = usersServices.getUserById(uid);
+    if (user.role !== "admin") {
+      res
+        .status(401)
+        .json({
+          status: "error",
+          message: "No tienes permisos para modificar un usuario",
+        });
+    }
+    if (user.role === "premium") {
+      user.role = "user";
+    } else {
+      user.role = "premium";
+    }
+    user.save();
+    if (user === null) {
+      res
+        .status(404)
+        .json({ status: "error", message: "No se encontro el user" });
+    }
+    res.status(200).send({
+      status: "succses",
+      message: `user ${user.email} con id :${user._id} cambiado a ${user.role}`,
+    });
+  } catch (error) {
+    Logger.error("Error en setRole controller", error);
+    res.status(500).json({
+      status: "error",
+      message: `Error al cambiar el rol del user ${user._id}`,
+    });
   }
 };

@@ -45,8 +45,10 @@ socket.on("product.route:products", (products) => {
   listProducts.appendChild(li);
 });
 // Agrego un producto haciendo una peticion a mi ruta
+console.log();
 form.addEventListener("submit", (e) => {
   e.preventDefault();
+  const ownerId = window.location.search.split("=")[1];
   const producto = {
     title: e.target[0].value,
     description: e.target[1].value,
@@ -56,6 +58,7 @@ form.addEventListener("submit", (e) => {
     stock: e.target[5].value,
     category: e.target[6].value,
     thumbnail: e.target[7].value,
+    owner: ownerId,
   };
   fetch(`${url}/api/products`, {
     method: "POST",
@@ -105,12 +108,16 @@ form.addEventListener("submit", (e) => {
 // correspondiente
 formDelete.addEventListener("submit", (e) => {
   e.preventDefault();
+  const ownerId = window.location.search.split("=")[1];
   const idToDelete = e.target[0].value;
   // en caso de que me devuelva el res.status === 200 elimino el producto del dom y como ya se mando
   // la oeticion en la persistencia en archivo ya se modifico, en caso de que algo falle lanzo un error
   // para poder debuggear lo necesario
   fetch(`${url}/api/products/${idToDelete}`, {
     method: "DELETE",
+    data: {
+      uid: ownerId,
+    },
     headers: {
       "Content-Type": "application/json",
     },

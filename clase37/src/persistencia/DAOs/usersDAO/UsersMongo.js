@@ -14,6 +14,18 @@ export default class UserManager {
       });
     }
   }
+  async getUserById(uid) {
+    if (!uid) {
+      const response = `Faltan campos por completar`;
+      return response;
+    }
+    try {
+      const user = await usersServices.getUserById(uid);
+      return user;
+    } catch (error) {
+      console.log("ERROR getUserById", error);
+    }
+  }
   async getUserByEmail(email) {
     if (!email) {
       const response = `Faltan campos por completar`;

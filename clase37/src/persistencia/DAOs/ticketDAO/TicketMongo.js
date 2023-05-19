@@ -35,6 +35,9 @@ export default class TicketManager {
     }
   }
   async getTicketById(tid) {
+    if (!tid) {
+      return null;
+    }
     try {
       const ticket = await ticketServices.getTicket(tid);
       if (!ticket) {

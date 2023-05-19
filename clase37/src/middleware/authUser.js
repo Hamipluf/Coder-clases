@@ -8,7 +8,7 @@ export const verifyAdminUser = (req, res, next) => {
         .status(401)
         .json({ status: "User no valido", message: response });
     }
-    if (user.role === "admin") {
+    if (user.role === "admin" || "premium") {
       next();
     } else {
       const response = "Solo los administradores pueden ingresar";

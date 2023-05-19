@@ -1,7 +1,9 @@
 import { socketServer } from "../app.js";
 import ProductManager from "../persistencia/DAOs/productsDAO/ProductsMongo.js";
+import UserManager from "../persistencia/DAOs/usersDAO/UsersMongo.js";
 import Logger from "../utils/winston.js";
 const manager = new ProductManager();
+const user = new UserManager();
 export const getAllProducts = async (req, res) => {
   // este endpoint devuelve un arreglo [productos]
   const { limit = 10, page = 1, sort, ...query } = req.query; // devuelve string
@@ -41,14 +43,12 @@ export const getProductById = async (req, res) => {
   // devuelve un arreglo de productos []
   const { pid } = req.params; // params son strings ""
   try {
-    // const getProductsById = await manager.getProductsById(parseInt(pid));
     // mongoose son numeber y sring el id
-    const getProductsById = await manager.getProductsById(pid);
-    if (getProductsById === null) {
+    const productById = await manager.getProductsById(pid);
+    if (productById === null) {
       res.status(404).send("Producto no encontrado");
     }
-    s;
-    res.status(200).send(getProductsById); // devuelve {}
+    res.status(200).send(productById); // devuelve {}
   } catch (error) {
     Logger.error("controller getProductById", error);
     res.status(500).send({
@@ -58,8 +58,33 @@ export const getProductById = async (req, res) => {
   }
 };
 export const addProduct = async (req, res) => {
-  const product = req.body;
+  const {
+    title,
+    description,
+    code,
+    price,
+    status,
+    stock,
+    category,
+    thumbnail,
+    owner,
+  } = req.body;
+  const product = {
+    title,
+    description,
+    code,
+    price,
+    status,
+    stock,
+    category,
+    thumbnail,
+    owner,
+  };
   try {
+    const userOwner = await user.getUserById(owner);
+    if (userOwner.role === "user") {
+      res.status(401).send("No tienes permisos para agregar un producto");
+    }
     const addProduct = await manager.addProduct(product);
     if (addProduct === null) {
       res.status(400).send({
@@ -103,10 +128,16 @@ export const udapteProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   const { pid } = req.params; // params son strings ""
   try {
-    // const deleteProduct = await manager.deleteProduct(parseInt(pid));
-    // Mongo son numbers y string el id
+    if (req.user.role === "user") {
+      res.status(401).send("No tienes permisos para eliminar un producto");
+    }
+    const product = await manager.getProductsById(pid);
+    if (product.owner !== req.user._id) {
+      res
+        .status(401)
+        .send("No tienes permisos para eliminar un producto si no es tuyo");
+    }
     const deleteProduct = await manager.deleteProduct(pid);
-
     if (deleteProduct === null) {
       res.status(400).send({
         status: "Error",

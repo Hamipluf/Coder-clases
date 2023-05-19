@@ -7,6 +7,7 @@ import {
   getCurrentUser,
   recoveryUser,
   setNewPass,
+  setRole,
 } from "../controller/user.controller.js";
 
 const router = Router();
@@ -35,6 +36,7 @@ router.get(
   passport.authenticate("jwtCookies", { session: false }),
   getCurrentUser
 );
+router.post("/premium/:uid", setRole);
 router.get("/recovery/:id", recoveryUser);
 router.post("/setNewPass/:id", setNewPass);
 router.get("/logout", logoutUser);

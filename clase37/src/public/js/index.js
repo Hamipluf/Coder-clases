@@ -8,7 +8,6 @@ const addToCartBtn = document.getElementById("add_to_cart");
 const currentFirst = document.getElementById("current_first");
 const currentLast = document.getElementById("current_last");
 fetch(`${url}/api/auth/current`, {
-  method: "GET",
   headers: {
     "Content-Type": "application/json",
   },
@@ -78,4 +77,28 @@ function agregar(pid) {
       }
     })
     .catch((e) => console.error(e));
+}
+function seeOwner(pid) {
+  fetch(`${url}/api/products/${pid}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      Swal.fire({
+        title: `Nombre ${data.owner.first_name} ${data.owner.last_name}`,
+        text: `Email: ${data.owner.email}`,
+        icon: "info",
+        confirmButtonText: "Close",
+      });
+    })
+    .catch((err) => {
+      Swal.fire({
+        title: err.message,
+        text: "err.code",
+        icon: "error",
+        confirmButtonText: "Cool",
+      });
+    });
 }

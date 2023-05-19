@@ -40,7 +40,7 @@ const productsSchema = new mongoose.Schema({
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Users",
-    default: "admin",
+    default: "643f2b7d7203c517eeee6f48", //Id del coderadmin
   },
 });
 productsSchema.plugin(mongoosePaginate);

@@ -9,8 +9,16 @@ class ProductService {
     const product = await this.model.create(obj);
     return product;
   };
-  getOneProductById = async (id) => {
-    const product = await this.model.findById(id);
+  getOneProductById = async (pid) => {
+    const product = await this.model.findOne({ _id: pid }).populate({
+      path: "owner",
+      model: "Users",
+      select:
+        "_id first_name last_name email age role", // selecciono la info para no mostrar info sensible 
+      options: {
+        strictPopulate: false,
+      },
+    });
     return product;
   };
   getProdctPaginate = async (query, filtro) => {

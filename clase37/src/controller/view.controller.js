@@ -14,7 +14,7 @@ export const homeView = async (req, res) => {
     sort
   );
   const document = products.docs;
-  const user = req.user.role === "user" ? true : false;
+  const user = req.user.role === "user" || "premium" ? true : false;
   res.render("home", { document, user });
 };
 export const registerView = (req, res) => {

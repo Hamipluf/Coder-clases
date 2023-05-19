@@ -19,10 +19,10 @@ fetch("http://localhost:8080/api/auth/current", {
     currentLastName.innerText = `${lastName}`;
     currentEmail.innerText = `${data.userResponse.email}`;
     currentAge.innerText = `${data.userResponse.age || 0}`;
-    if (data.userResponse.role === "admin") {
+    if (data.userResponse.role === "admin" || "premium") {
       const p = document.createElement("p");
       p.setAttribute("class", "admin");
-      p.innerText = "You are an admin!";
+      p.innerText = `You are an ${data.userResponse.role}!`;
       userData.appendChild(p);
     }
   });

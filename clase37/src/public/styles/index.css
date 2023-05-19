@@ -246,3 +246,28 @@ input ::placeholder {
   transform: scale(0.9);
   transition: all ease-in-out;
 }
+.btn-see-saler {
+  height: 30px;
+  width: 120px;
+  margin: 10px 0 10px 900px;
+  border-radius: 5px;
+  box-shadow: 5px 5px 10px #050505;
+  border: none;
+  background-color: #b0ee3e;
+}
+.btn-see-saler:hover {
+  opacity: 0.8;
+  cursor: pointer;
+}
+.btn-see-saler:active {
+  transform: scale(0.9);
+  transition: all ease-in-out;
+}
+.list_action {
+  width: 100%;
+  padding: 10px;
+  display: grid;
+  justify-content: end;
+  grid-template-columns: 1fr 1fr;
+  justify-items: start;
+}

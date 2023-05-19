@@ -20,6 +20,10 @@ class UsersService {
     const user = await this.model.findOne({ email: userEmail });
     return user;
   };
+  getUserById = async (uid) => {
+    const user = await this.model.findOne({ _id: uid });
+    return user;
+  };
 }
 const usersServices = new UsersService(userModel);
 

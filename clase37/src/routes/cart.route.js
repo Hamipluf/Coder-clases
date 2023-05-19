@@ -26,7 +26,11 @@ router.get(
   goToPay
 );
 //Agregar producto con Cart id y Product id
-router.post("/:cid/product/:pid", addProductCart);
+router.post(
+  "/:cid/product/:pid",
+  passport.authenticate("jwtCookies", { session: false }),
+  addProductCart
+);
 // Actualiza el carrito entero
 router.put("/:cid", udapteAllCart);
 // Actualiza la cantidad del producto por body

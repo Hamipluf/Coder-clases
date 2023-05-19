@@ -9,6 +9,7 @@ fetch("http://localhost:8080/api/auth/current", {
   .then((response) => response.json())
   .then((data) => {
     const cid = localStorage.getItem("cart_id");
+    const uid = data.userResponse.id;
     if (!cid) {
       fetch(`${url}/api/carts/`, {
         method: "POST",
@@ -36,6 +37,20 @@ fetch("http://localhost:8080/api/auth/current", {
       a_chat.setAttribute("href", "/chat");
       a_cart.innerText = "Cart";
       a_chat.innerText = "Chat";
+      navegation.appendChild(a_cart);
+      navegation.appendChild(a_chat);
+    }
+    if (data.userResponse.role === "premium") {
+      const a_cart = document.createElement("a");
+      const a_chat = document.createElement("a");
+      const a_products = document.createElement("a");
+      a_cart.setAttribute("href", `/cart?cart=${cid}`);
+      a_chat.setAttribute("href", "/chat");
+      a_cart.innerText = "Cart";
+      a_chat.innerText = "Chat";
+      a_products.setAttribute("href", `/realtimeproducts?uid=${uid}`);
+      a_products.innerText = "Manager Products";
+      navegation.appendChild(a_products);
       navegation.appendChild(a_cart);
       navegation.appendChild(a_chat);
     }

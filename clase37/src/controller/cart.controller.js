@@ -1,7 +1,9 @@
 import CartsManager from "../persistencia/DAOs/cartsDAO/CartsMongo.js";
 import TicketManager from "../persistencia/DAOs/ticketDAO/TicketMongo.js";
+import ProductManager from "../persistencia/DAOs/productsDAO/ProductsMongo.js";
 import Logger from "../utils/winston.js";
 const ticketManager = new TicketManager();
+const productManager = new ProductManager();
 const carts = new CartsManager();
 export const createCart = async (req, res) => {
   try {
@@ -47,6 +49,15 @@ export const getAllCarts = async (req, res) => {
 export const addProductCart = async (req, res) => {
   const { cid, pid } = req.params; // son Strings
   try {
+    const product = await productManager.getProductsById(pid);
+    if (req.user.role === "premium") {
+      if (product.owner._id == req.user._id) {
+        return res.status(401).send({
+          status: "Error",
+          message: "No podes agregar un producto propio",
+        });
+      }
+    }
     const productToCart = await carts.addProductToCart(cid, pid);
     if (productToCart.status === "Error") {
       const message = productToCart.message;
@@ -58,10 +69,10 @@ export const addProductCart = async (req, res) => {
     res.status(200).send({
       status: "Successful",
       message: "Producto añadido correctamente",
-      data: productToCart,
+      // data: productToCart,
     });
   } catch (error) {
-    Logger.error("ERROR cratdProductToCart POST", error);
+    Logger.error("ERROR addProductCart POST", error);
     res.status(500).json({
       status: "Error",
       message: "No se puede añadir el producto",
