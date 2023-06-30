@@ -28,7 +28,7 @@ export const getCart = async (req, res) => {
       data: getCartById,
     });
   } catch (error) {
-    console.log("ERROR getCartById GET", error);
+    Logger.error("ERROR getCartById GET", error);
     res
       .status(500)
       .send({ status: "Error", message: "No se pudo obtener el carrito" });
@@ -50,14 +50,14 @@ export const addProductCart = async (req, res) => {
   const { cid, pid } = req.params; // son Strings
   try {
     const product = await productManager.getProductsById(pid);
-    // if (req.user.role === "premium") {
-    //   if (product.owner._id == req.user._id) {
-    //     return res.status(401).send({
-    //       status: "Error",
-    //       message: "No podes agregar un producto propio",
-    //     });
-    //   }
-    // }
+    if (req.user.role === "premium") {
+      if (product.owner._id == req.user._id) {
+        return res.status(401).send({
+          status: "Error",
+          message: "No podes agregar un producto propio",
+        });
+      }
+    }
     const productToCart = await carts.addProductToCart(cid, pid);
     if (productToCart.status === "Error") {
       const message = productToCart.message;

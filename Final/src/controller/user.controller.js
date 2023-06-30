@@ -144,7 +144,7 @@ export const setRole = async (req, res) => {
 
     res.status(200).send({
       status: "succses",
-      message: `user ${user.email} con id :${user._id} cambiado a ${user.role}`,
+      message: `user ${user.email} cambiado a ${user.role}`,
     });
   } catch (error) {
     Logger.error("Error en setRole controller", error);
@@ -168,11 +168,10 @@ export const getAllUsers = async (req, res) => {
   }
 };
 // Elimina al usuario que por 2 dias no se logueo y envia un mail de notificacion
-export const deleteUser = async (req, res) => {
+export const deleteUserInactive = async (req, res) => {
   try {
     const dosDiasEnMilisegundos = 2 * 24 * 60 * 60 * 1000;
-    const cincoMinutosEnMilisegundos = 5 * 60 * 1000;
-    const tiempoInactivo = new Date(Date.now() - cincoMinutosEnMilisegundos);
+    const tiempoInactivo = new Date(Date.now() - dosDiasEnMilisegundos);
 
     const usuariosInactivos = await usersServices.findInactiveUsers(
       tiempoInactivo
@@ -202,5 +201,33 @@ export const deleteUser = async (req, res) => {
   } catch (error) {
     Logger.error("Error controller deleteUser", error);
     res.status(500).json({ error: "Error en el servidor" });
+  }
+};
+// Elimina el user que coicida con el user Id que se le pase por params
+export const deleteAnUser = async (req, res) => {
+  const { uid } = req.params;
+  if (!uid) {
+    return res.status(404).json({
+      status: "error",
+      message: `No se encontro ningun usuario con el id ==> ${uid}`,
+    });
+  }
+  try {
+    const userDeleted = await usersServices.deleteById(uid);
+    if (!userDeleted) {
+      return res.status(400).json({
+        status: "error",
+        message: `No se a podido eliminar el usuario con el ID:${uid}`,
+      });
+    }
+    res
+      .status(200)
+      .json({
+        status: "succses",
+        message: `Se elimino correctamente el user: ${userDeleted.email}`,
+      });
+  } catch (error) {
+    res.status(500).json({ error: "Error en el servidor" });
+    Logger.error("Error en deleteAnUser controller", error);
   }
 };

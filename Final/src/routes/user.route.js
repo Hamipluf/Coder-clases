@@ -9,7 +9,8 @@ import {
   setNewPass,
   setRole,
   getAllUsers,
-  deleteUser
+  deleteUserInactive,
+  deleteAnUser
 } from "../controller/user.controller.js";
 const router = Router();
 
@@ -42,6 +43,7 @@ router.get("/recovery/:id", recoveryUser);
 router.get("/logout", logoutUser);
 router.post("/premium/:uid", setRole);
 router.post("/setNewPass/:id", setNewPass);
-router.delete("/", deleteUser)
+router.delete("/", deleteUserInactive);
+router.delete("/deleteUser/:uid", deleteAnUser)
 
 export default router;

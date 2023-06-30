@@ -2,6 +2,7 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
+import cors from "cors";
 // Handlebars
 import handlebars from "express-handlebars";
 import Handlebars from "handlebars";
@@ -19,6 +20,7 @@ import chat from "./routes/messages.route.js";
 import view from "./routes/views.router.js";
 import testLoggerRoute from "./routes/testLogger.router.js";
 import mailerRoute from "./routes/mailer.router.js";
+import paymentRoute from "./routes/payment.route.js";
 // Mongo DB
 import "./persistencia/mongoDB/dbConfig.js";
 // Passport
@@ -33,6 +35,11 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(process.env.SECRET_COOKIE));
 // Swagger
@@ -75,6 +82,7 @@ app.use("/api/carts", cartRoute);
 app.use("/api/auth", userRoute);
 app.use("/api/mailer", mailerRoute);
 app.use("/loggerTest", testLoggerRoute);
+app.use("/api/payment", paymentRoute);
 app.use("/apidocs", swaggerUiExpress.serve, swaggerUiExpress.setup(specs));
 
 // HTTP Server

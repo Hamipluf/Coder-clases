@@ -91,8 +91,8 @@ function deleteProduct(pid) {
 function goToBuy() {
   window.location.assign("http://localhost:8080/home");
 }
-function goToPay() {
-  fetch(`${url}/api/carts/${cid}`)
+async function goToPay() {
+  await fetch(`${url}/api/carts/${cid}`)
     .then((response) => response.json())
     .then((data) => {
       const products = data.data.cartById.products;
@@ -106,8 +106,44 @@ function goToPay() {
             background: "linear-gradient(147deg, #ffc53b 0%, #FF2525 74%)",
           },
         }).showToast();
-      } else {
-        window.location.assign(`http://localhost:8080/checkout?cart=${cid}`);
       }
-    });
+    })
+    .catch((err) => console.log(err));
+
+  await fetch(`${url}/api/payment/create-checkout-session`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ cart: cid }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.status === "error") {
+        Toastify({
+          text: data.message,
+          duration: 2000,
+          gravity: "top",
+          position: "right",
+          style: {
+            background: "linear-gradient(147deg, #ffc53b 0%, #FF2525 74%)",
+          },
+        }).showToast();
+      }
+      if (data.status === "succsess") {
+        Toastify({
+          text: "Redireccionando al CheckOut",
+          duration: 2000,
+          gravity: "top",
+          position: "right",
+          style: {
+            background: "linear-gradient(to top, #9890e3 0%, #b1f4cf 100%)",
+          },
+        }).showToast();
+        setTimeout(() => {
+          window.location.assign(data.url);
+        }, 1800);
+      }
+    })
+    .catch((err) => console.log(err));
 }

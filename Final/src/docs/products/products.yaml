@@ -154,7 +154,7 @@ paths:
         - Products
       summary: >-
         Elimina el producto de la DataBase
-        (Unicamente a los que poseen el role = "user" || "premium")
+        (Unicamente a los que poseen el role = "user" || "premium") y manda una notificacion por email solo a los "premium"
       parameters:
         - name: pid
           in: query

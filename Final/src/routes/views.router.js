@@ -12,6 +12,8 @@ import {
   setPass,
   expireSetPass,
   dashboardView,
+  paymentCanceledView,
+  paymentSuccesView,
 } from "../controller/view.controller.js";
 const router = Router();
 
@@ -50,5 +52,7 @@ router.get("/errorRegistro", errorRegistroView);
 router.get("/recoveryPass", recoveryView);
 router.get("/changePass", setPass);
 router.get("/expireSetPass", expireSetPass);
+router.get("/paymentSucces", paymentSuccesView);
+router.get("/paymentCanceled", paymentCanceledView);
 
 export default router;

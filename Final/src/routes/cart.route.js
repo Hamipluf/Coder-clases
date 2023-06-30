@@ -28,7 +28,7 @@ router.get(
 //Agregar producto con Cart id y Product id
 router.post(
   "/:cid/product/:pid",
-  // passport.authenticate("jwtCookies", { session: false }),
+  passport.authenticate("jwtCookies", { session: false }),
   addProductCart
 );
 // Actualiza el carrito entero

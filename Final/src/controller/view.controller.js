@@ -48,6 +48,12 @@ export const cartView = async (req, res) => {
   res.render("cart", { products, total });
 };
 export const dashboardView = async (req, res) => {
-  const users = await userManager.getAllUsers()
-  res.render("daschboard", {users});
+  const users = await userManager.getAllUsers();
+  res.render("daschboard", { users });
+};
+export const paymentSuccesView = async (req, res) => {
+  res.render("paymentSuccess");
+};
+export const paymentCanceledView = async (req, res) => {
+  res.render("paymentCanceled");
 };

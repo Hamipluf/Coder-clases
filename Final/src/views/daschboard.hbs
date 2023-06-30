@@ -16,15 +16,15 @@
         <span> Role: </span>
         <label>
           Premium
-          <input type="checkbox" id="role_premium" />
+          <input type="checkbox" onclick="isPremium()"/>
         </label>
         <label>
           User
-          <input type="checkbox" id="role_user" />
+          <input type="checkbox" onclick="isUser()"/>
         </label>
         <label>
           Admin
-          <input type="checkbox" id="role_admin" />
+          <input type="checkbox" onclick="isAdmin()"/>
         </label>
         <button onclick="changeRole('{{_id}}')" class="button-50">Change Role
         </button>
