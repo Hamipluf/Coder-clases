@@ -1,0 +1,16 @@
+function palindrome(palabra) {
+  // Convertir la palabra a minúsculas
+  palabra = palabra.toLowerCase();
+  // Eliminar espacios en blanco
+  palabra = palabra.replace(/[\s._,()-/]+/g, "");
+  const longitud = palabra.length; 
+  for (let i = 0; i < longitud ; i++) {
+    if (palabra[i] !== palabra[longitud - 1 - i]) {
+      return false;
+    }
+  } 
+  return true;
+}
+
+const esPalindormo = palindrome("cualquierpalabra");
+console.log(esPalindormo)
